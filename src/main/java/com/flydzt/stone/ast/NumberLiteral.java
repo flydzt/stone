@@ -1,4 +1,6 @@
-package com.flydzt.stone;
+package com.flydzt.stone.ast;
+
+import com.flydzt.stone.Token;
 
 public class NumberLiteral extends ASTLeaf {
     public NumberLiteral(Token t) {

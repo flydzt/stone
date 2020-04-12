@@ -1,4 +1,6 @@
-package com.flydzt.stone;
+package com.flydzt.stone.ast;
+
+import com.flydzt.stone.Token;
 
 import java.util.ArrayList;
 import java.util.Iterator;
