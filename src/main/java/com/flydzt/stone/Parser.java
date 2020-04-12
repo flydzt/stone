@@ -114,6 +114,11 @@ public class Parser {
     }
 
     public Parser option(Parser p) {
+        elements.add(new Repeat(p, true));
+        return this;
+    }
+
+    public Parser repeat(Parser p) {
         elements.add(new Repeat(p, false));
         return this;
     }

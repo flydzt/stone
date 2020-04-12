@@ -1,8 +1,7 @@
 package com.flydzt.stone;
 
 import com.flydzt.stone.Parser.Operators;
-import com.flydzt.stone.ast.Name;
-import com.flydzt.stone.ast.NumberLiteral;
+import com.flydzt.stone.ast.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,4 +17,38 @@ public class BasicParser {
                     rule().number(NumberLiteral.class),
                     rule().identifier(Name.class, reserved),
                     rule().string(StringLiteral.class));
+    Parser factor = rule().or(rule(NegativeExpr.class).sep("-").ast(primary),
+            primary);
+    Parser expr = expr0.expression(BinaryExpr.class, factor, operators);
+    Parser statement0 = rule();
+    Parser block = rule(BlockStmnt.class)
+            .sep("{").option(statement0)
+            .repeat(rule().sep(";", Token.EOL).option(statement0))
+            .sep("}");
+    Parser simple = rule(PrimaryExpr.class).ast(expr);
+    Parser statement = statement0.or(
+            rule(IfStmnt.class).sep("if").ast(expr).ast(block)
+                    .option(rule().sep("else").ast(block)), simple);
+    Parser program = rule().or(statement, rule(NullStmnt.class)
+            .sep(";", Token.EOL));
+
+    public BasicParser() {
+        reserved.add(";");
+        reserved.add("}");
+        reserved.add(Token.EOL);
+
+        operators.add("=", 1, Operators.RIGHT);
+        operators.add("==", 2, Operators.LEFT);
+        operators.add(">", 2, Operators.LEFT);
+        operators.add("<", 2, Operators.LEFT);
+        operators.add("+", 3, Operators.LEFT);
+        operators.add("-", 3, Operators.LEFT);
+        operators.add("*", 4, Operators.LEFT);
+        operators.add("/", 4, Operators.LEFT);
+        operators.add("%", 4, Operators.LEFT);
+    }
+
+    public ASTree parse(Lexer lexer) throws ParseException {
+        return program.parse(lexer);
+    }
 }
