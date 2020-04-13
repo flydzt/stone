@@ -36,7 +36,7 @@ public class Parser {
     }
 
     protected ASTree parse(Lexer lexer) throws ParseException {
-        ArrayList<ASTree> results = new ArrayList<>();
+        List<ASTree> results = new ArrayList<>();
         for (Element element : elements) {
             element.parse(lexer, results);
         }
